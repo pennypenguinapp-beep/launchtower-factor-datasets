@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LaunchTower — Independent Market-Data Research Desk</title>
+<meta name="description" content="LaunchTower publishes dated, reproducible momentum + quality factor research on large-cap US equities. Free reports, datasets, and a full model pack.">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;line-height:1.65;color:#1f2937;background:#fff}
+a{color:#2563eb;text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:960px;margin:0 auto;padding:0 24px}
+header{background:#0f172a;color:#e2e8f0;padding:72px 0 56px}
+header .kicker{display:inline-block;font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:#7dd3fc;margin-bottom:14px;font-weight:600}
+header h1{font-size:2.6rem;line-height:1.15;font-weight:800;color:#fff;margin-bottom:16px}
+header p.sub{font-size:1.15rem;color:#cbd5e1;max-width:640px}
+nav{background:#1e293b}
+nav .wrap{display:flex;flex-wrap:wrap;gap:8px;padding:12px 24px;justify-content:center}
+nav a{color:#cbd5e1;font-size:.92rem;padding:6px 12px;border-radius:6px}
+nav a:hover{background:#334155;text-decoration:none}
+section{padding:56px 0;border-bottom:1px solid #e5e7eb}
+h2{font-size:1.7rem;font-weight:700;color:#0f172a;margin-bottom:18px}
+h3{font-size:1.15rem;font-weight:700;color:#0f172a;margin:22px 0 10px}
+p{margin-bottom:14px;color:#374151}
+ul{margin:0 0 14px 22px;color:#374151}
+li{margin-bottom:6px}
+.card{background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:24px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px;margin-top:8px}
+.btn{display:inline-block;background:#2563eb;color:#fff;padding:12px 22px;border-radius:8px;font-weight:600;font-size:.95rem;margin-top:8px}
+.btn:hover{background:#1d4ed8;text-decoration:none}
+.btn.alt{background:#0f172a}
+.btn.alt:hover{background:#1e293b}
+table{width:100%;border-collapse:collapse;margin:14px 0;font-size:.92rem}
+th,td{padding:9px 12px;text-align:left;border-bottom:1px solid #e5e7eb}
+th{background:#f1f5f9;font-weight:600;color:#0f172a}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums}
+code{background:#f1f5f9;padding:2px 6px;border-radius:4px;font-size:.9em}
+.disclaimer{background:#fffbeb;border:1px solid #fde68a;border-radius:12px;padding:20px 24px;font-size:.92rem;color:#92400e}
+.disclaimer strong{color:#78350f}
+footer{background:#0f172a;color:#94a3b8;padding:40px 0;font-size:.9rem;text-align:center}
+footer a{color:#7dd3fc}
+.wallet{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:16px 18px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.95rem;word-break:break-all;margin:12px 0}
+@media(max-width:640px){header h1{font-size:2rem}section{padding:40px 0}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <span class="kicker">Independent · Self-Funded · Reproducible</span>
+    <h1>LaunchTower</h1>
+    <p class="sub">A market-data research desk publishing dated, reproducible momentum + quality factor screens on large-cap US equities. Every number is a deterministic function of public data — run the code, verify the table, build on it.</p>
+  </div>
+</header>
+
+<nav>
+  <div class="wrap">
+    <a href="#about">About</a>
+    <a href="#free">Free Research</a>
+    <a href="#paid">Model Pack</a>
+    <a href="#methodology">Methodology</a>
+    <a href="#contact">Contact</a>
+  </div>
+</nav>
+
+<section id="about">
+  <div class="wrap">
+    <h2>Who we are</h2>
+    <p>LaunchTower is an independent, self-funded market-data desk. We run a transparent factor screen on a universe of large-cap US equities and publish the full factor table, the dated research report, and the exact code used to generate it.</p>
+    <p>We do not sell advice. We sell <strong>reproducible research</strong>: the data, the methodology, and the code — so you can verify every number and apply it to your own process.</p>
+    <div class="grid">
+      <div class="card"><h3 style="margin-top:0">Transparent</h3><p>Full factor tables, methodology, and code published in the open. No black box.</p></div>
+      <div class="card"><h3 style="margin-top:0">Reproducible</h3><p>Every report is a deterministic function of public market data. Re-run it yourself.</p></div>
+      <div class="card"><h3 style="margin-top:0">Dated</h3><p>Each screen is stamped with its report date and data-as-of close, so you always know what you're looking at.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="free">
+  <div class="wrap">
+    <h2>Free research &amp; datasets</h2>
+    <p>Our latest dated report and the full factor CSV are free to download. The screen covers a universe of <strong>19 large-cap US equities</strong>, data as of the <strong>2026-09-11 close</strong>, report dated <strong>2026-09-13</strong>.</p>
+    <div class="card">
+      <h3 style="margin-top:0">Latest report — 2026-09-13</h3>
+      <ul>
+        <li><a href="https://github.com/launchtower/launchtower-factor-datasets/blob/main/factors_2026-09-13.csv"><strong>Full factor table (CSV)</strong></a> — 19 tickers, ranked by composite score</li>
+        <li><a href="https://github.com/launchtower/launchtower-factor-datasets/blob/main/factor_scores_2026-09-11.csv"><strong>Earlier screen (CSV)</strong></a> — 2026-09-11 run</li>
+        <li><a href="https://github.com/launchtower/launchtower-factor-datasets"><strong>Repository</strong></a> — README with methodology, schema, and quick start</li>
+      </ul>
+      <a class="btn" href="https://github.com/launchtower/launchtower-factor-datasets">Browse the repo →</a>
+    </div>
+    <p style="font-size:.9rem;color:#6b7280">Raw data source: Yahoo Finance (via <code>yfinance</code>), split/dividend-adjusted daily closes. All figures are computed from public market data.</p>
+  </div>
+</section>
+
+<section id="paid">
+  <div class="wrap">
+    <h2>The full model pack</h2>
+    <p>Want the complete, reproducible model in one place? The <strong>LaunchTower Model Pack</strong> includes:</p>
+    <ul>
+      <li>The complete factor score dataset (CSV) from the latest screen</li>
+      <li>The full dated research report with top/bottom analysis and interpretation</li>
+      <li>The self-contained Python script that reproduces the entire screen end-to-end</li>
+      <li>Methodology documentation: component definitions, weights, z-scoring, and data sources</li>
+      <li>CSV schema reference for every column</li>
+    </ul>
+    <p><strong>One-time purchase. No subscription. No lock-in.</strong> Run it, verify it, build on it.</p>
+    <div class="card">
+      <h3 style="margin-top:0">How to buy (USDC)</h3>
+      <p>Card checkout is coming when Stripe goes live. In the meantime, you can purchase with <strong>USDC</strong>:</p>
+      <div class="wallet">0x700cD70c490e181Fa8F66651Ee06Ce6A1949A4A3</div>
+      <p style="font-size:.9rem;margin-bottom:0">Send USDC to the address above and email <a href="mailto:hello@launchtower.dev">hello@launchtower.dev</a> with your transaction hash. You'll receive the full pack within one business day.</p>
+      <a class="btn alt" href="mailto:hello@launchtower.dev?subject=Model%20Pack%20Purchase">Email to confirm purchase →</a>
+    </div>
+  </div>
+</section>
+
+<section id="methodology">
+  <div class="wrap">
+    <h2>Methodology</h2>
+    <p>The composite score is a z-scored blend of momentum and quality components, computed over a trailing 12-month window:</p>
+    <table>
+      <thead><tr><th>Component</th><th>Weight</th><th>Definition</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Momentum (12-1)</strong></td><td class="num">50%</td><td>Return from t-252 to t-22 (skips the last month to avoid short-term reversal)</td></tr>
+        <tr><td><strong>Quality (Sharpe)</strong></td><td class="num">30%</td><td>Annualized mean daily return / annualized daily vol, trailing 252 days</td></tr>
+        <tr><td><strong>Low Volatility</strong></td><td class="num">10%</td><td>Inverse z-score of annualized realized vol</td></tr>
+        <tr><td><strong>Low Drawdown</strong></td><td class="num">10%</td><td>Inverse z-score of max drawdown from peak</td></tr>
+      </tbody>
+    </table>
+    <p>All components are z-scored across the universe before weighting. A higher composite score indicates stronger momentum and better risk-adjusted performance.</p>
+    <p><strong>Universe:</strong> 19 liquid large-cap US names. <strong>Data:</strong> Yahoo Finance adjusted closes, trailing ~3 years. <strong>Cadence:</strong> re-run monthly; each run produces a new dated CSV and report.</p>
+  </div>
+</section>
+
+<section id="disclaimer">
+  <div class="wrap">
+    <div class="disclaimer">
+      <strong>Disclaimer.</strong> LaunchTower publishes quantitative research built from public market data. Nothing on this site is personalized investment advice, a recommendation to buy or sell any security, or a guarantee of future performance. Past factor performance does not guarantee future results. All data is provided "as is" without warranty of any kind. You are solely responsible for your own investment decisions.
+    </div>
+  </div>
+</section>
+
+<section id="contact">
+  <div class="wrap">
+    <h2>Contact</h2>
+    <p>Questions, data requests, or partnership inquiries:</p>
+    <p><a href="mailto:hello@launchtower.dev"><strong>hello@launchtower.dev</strong></a></p>
+    <p style="font-size:.9rem;color:#6b7280">We typically respond within one business day.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p style="margin-bottom:8px"><strong style="color:#e2e8f0">LaunchTower</strong> — Independent market-data research desk</p>
+    <p style="margin-bottom:4px">Research only · Not investment advice · No performance guarantees</p>
+    <p>© 2026 LaunchTower · <a href="https://github.com/launchtower/launchtower-factor-datasets">GitHub</a> · <a href="mailto:hello@launchtower.dev">hello@launchtower.dev</a></p>
+  </div>
+</footer>
+
+</body>
+</html>
