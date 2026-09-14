@@ -1,138 +1,79 @@
 # LaunchTower Factor Model Report — 2026-09-16
 
-**Universe:** 151 US large-caps  
-**Data Source:** Yahoo Finance (yfinance)  
-**Date Range:** 2024-09-16 to 2026-09-15 (252 trading days)  
-**Methodology:** Momentum + Quality composite factor model  
-**Generated:** 2026-09-16 (live data pull)
+**Universe:** 151 US large-caps · **Window:** trailing 252 trading days (2024-09-16 → 2026-09-11) · **Data:** yfinance, split/dividend-adjusted closes · **Model:** 50% Momentum (12m return z-score) + 50% Quality (−volatility z-score)
+
+> **Disclaimer:** Research/educational output from public market data. Not personalized investment advice; not a recommendation to buy or sell any security. Past performance does not guarantee future results.
 
 ---
 
-## Executive Summary
+## Method (reproducible in ~15 lines)
 
-This report presents the results of a reproducible momentum + quality factor screen across 151 US large-cap stocks. The model ranks stocks by a composite score that balances 12-month momentum (50%) against quality, defined as low annualized volatility (50%).
+1. Pull 2 years of adjusted daily closes for 151 tickers.
+2. Per ticker, over the last 252 sessions compute: `ret_1m/3m/6m/12m`, annualized realized vol, max drawdown, distance from 52w high.
+3. Cross-sectionally z-score `ret_12m` → **Momentum**; z-score `vol_ann` and negate → **Quality**.
+4. **Composite = 0.5·Momentum + 0.5·Quality**, rank 1–151.
 
-**Key Findings:**
-- **MU (Micron)** leads with a composite score of +2.20, driven by exceptional 12-month momentum (+548.8%) despite high volatility (81.4%)
-- **VLO (Valero)** and **MPC (Marathon Petroleum)** rank #2 and #4, combining strong momentum with low volatility
-- **SMCI (Super Micro Computer)** ranks last (-1.59) with weak momentum and extreme volatility (91.6%)
-- **MRNA (Moderna)** is an outlier: massive 12-month momentum (+467.0%) but extreme volatility (192.6%) pushes it to rank #149
-
----
-
-## Methodology
-
-### Factors Computed
-
-1. **12-Month Momentum:** Return from 252 trading days ago to today
-2. **6-Month Momentum:** Return from 126 trading days ago to today
-3. **3-Month Momentum:** Return from 63 trading days ago to today
-4. **1-Month Momentum:** Return from 21 trading days ago to today
-5. **Volatility:** 252-day annualized standard deviation of daily returns
-6. **Max Drawdown:** Maximum peak-to-trough decline over the 252-day window
-7. **52-Week High Distance:** Current price relative to 252-day high
-
-### Composite Score
-
-**Composite = 50% Momentum (z-score) + 50% Quality (z-score)**
-
-Where:
-- **Momentum** = z-score of 12-month return
-- **Quality** = negative z-score of annualized volatility (lower vol = higher quality)
-
-**Interpretation:** Higher composite scores indicate stocks with strong momentum and lower volatility (higher quality). Lower scores indicate weak momentum and/or high volatility.
+Full code: `launchtower_factor_screen_2026-09-16.py` (in this repo).
 
 ---
 
-## Top 10 Stocks by Composite Score (2026-09-16)
+## Top 10 (highest composite)
 
-| Rank | Ticker | 12M Return | 6M Return | 3M Return | 1M Return | Volatility | Max DD | From 52W High | Composite |
-|------|--------|------------|-----------|-----------|-----------|------------|--------|---------------|-----------|
-| 1 | MU | +548.8% | +140.7% | -2.1% | +7.0% | 81.4% | -39.1% | -19.6% | **+2.20** |
-| 2 | VLO | +153.0% | +67.0% | +53.3% | +18.2% | 36.2% | -12.1% | 0.0% | **+0.82** |
-| 3 | INTC | +318.3% | +127.5% | -12.0% | +2.0% | 79.6% | -41.9% | -27.0% | **+0.79** |
-| 4 | MPC | +120.8% | +73.2% | +52.2% | +14.0% | 34.3% | -18.3% | -0.9% | **+0.67** |
-| 5 | PSX | +101.6% | +50.9% | +46.5% | +15.6% | 30.9% | -17.3% | -0.5% | **+0.63** |
-| 6 | JNJ | +52.1% | +11.0% | +12.0% | +2.3% | 19.1% | -11.0% | -4.6% | **+0.61** |
-| 7 | CSX | +50.9% | +25.5% | +3.6% | -2.0% | 22.2% | -11.6% | -7.8% | **+0.53** |
-| 8 | TTE | +56.1% | +14.1% | +4.8% | +4.8% | 24.6% | -20.1% | -1.8% | **+0.50** |
-| 9 | TGT | +77.2% | +36.9% | +18.4% | +1.2% | 30.6% | -13.3% | -8.3% | **+0.48** |
-| 10 | TRV | +36.3% | +25.2% | +23.9% | +1.7% | 20.8% | -8.8% | -5.2% | **+0.47** |
+| # | Ticker | Last | 12m Ret | Vol (ann) | From 52w High | Momentum | Quality | Composite |
+|---|--------|------|---------|-----------|---------------|----------|---------|-----------|
+| 1 | **MU** | 975.26 | +548.8% | 81.4% | −19.6% | +6.55 | −2.14 | **+2.204** |
+| 2 | **VLO** | 390.42 | +153.0% | 36.2% | 0.0% | +1.52 | +0.13 | **+0.825** |
+| 3 | **INTC** | 102.94 | +318.3% | 79.7% | −27.0% | +3.62 | −2.05 | **+0.786** |
+| 4 | **MPC** | 395.93 | +120.8% | 34.3% | −0.9% | +1.12 | +0.22 | **+0.669** |
+| 5 | **PSX** | 259.47 | +101.6% | 30.9% | −0.5% | +0.87 | +0.39 | **+0.630** |
+| 6 | **JNJ** | 265.58 | +52.1% | 19.2% | −4.6% | +0.24 | +0.98 | **+0.611** |
+| 7 | **CSX** | 48.95 | +50.9% | 22.2% | −7.8% | +0.23 | +0.82 | **+0.526** |
+| 8 | **TTE** | 91.89 | +56.1% | 24.6% | −1.8% | +0.29 | +0.70 | **+0.499** |
+| 9 | **TGT** | 155.83 | +77.2% | 30.6% | −8.3% | +0.56 | +0.40 | **+0.482** |
+| 10 | **TRV** | 375.20 | +36.3% | 20.8% | −5.2% | +0.04 | +0.89 | **+0.469** |
 
-**Key Observations:**
-- **MU (Micron)** leads with exceptional 12-month momentum (+548.8%) despite high volatility
-- **VLO (Valero)** and **MPC (Marathon Petroleum)** combine strong momentum with low volatility
-- **JNJ (Johnson & Johnson)** and **TTE (TotalEnergies)** show balanced momentum and quality
-- **TRV (Travelers)** ranks #10 with moderate momentum and low volatility
+## Bottom 10 (lowest composite)
 
----
-
-## Bottom 10 Stocks by Composite Score (2026-09-16)
-
-| Rank | Ticker | 12M Return | 6M Return | 3M Return | 1M Return | Volatility | Max DD | From 52W High | Composite |
-|------|--------|------------|-----------|-----------|-----------|------------|--------|---------------|-----------|
-| 151 | SMCI | -8.8% | +29.8% | +25.4% | +6.6% | 91.6% | -65.0% | -31.7% | **-1.59** |
-| 150 | COIN | -45.9% | -9.3% | +9.2% | +17.6% | 70.8% | -63.6% | -54.7% | **-1.30** |
-| 149 | MRNA | +467.0% | +169.7% | +190.0% | +126.1% | 192.6% | -34.2% | -17.4% | **-1.10** |
-| 148 | ZS | -42.6% | +8.5% | +30.5% | -7.2% | 63.2% | -64.9% | -51.1% | **-1.09** |
-| 147 | HOOD | -4.4% | +47.9% | +22.1% | +18.6% | 72.2% | -57.3% | -26.2% | **-1.07** |
-| 146 | ORCL | -50.6% | -4.9% | -18.1% | -2.0% | 57.0% | -64.6% | -53.7% | **-0.99** |
-| 145 | NOW | -29.4% | +17.3% | +28.6% | +6.1% | 56.9% | -56.8% | -31.1% | **-0.85** |
-| 144 | SE | -45.9% | +24.8% | +24.0% | -17.1% | 50.8% | -60.2% | -45.9% | **-0.80** |
-| 143 | INTU | -50.8% | -25.5% | +16.6% | -3.9% | 48.7% | -63.4% | -53.7% | **-0.78** |
-| 142 | PLTR | +1.7% | +8.9% | +27.6% | -2.2% | 60.9% | -48.2% | -19.3% | **-0.75** |
-
-**Key Observations:**
-- **SMCI (Super Micro Computer)** ranks last with weak momentum and extreme volatility (91.6%)
-- **COIN (Coinbase)** shows negative 12-month momentum and high volatility
-- **MRNA (Moderna)** is an outlier: massive 12-month momentum (+467.0%) but extreme volatility (192.6%)
-- **ZS (Zscaler)** and **HOOD (Robinhood)** show weak momentum and high volatility
+| # | Ticker | Last | 12m Ret | Vol (ann) | From 52w High | Momentum | Quality | Composite |
+|---|--------|------|---------|-----------|---------------|----------|---------|-----------|
+| 142 | PLTR | 167.23 | +1.8% | 60.9% | −19.3% | −0.40 | −1.11 | −0.753 |
+| 143 | INTU | 321.57 | −50.8% | 48.7% | −53.7% | −1.06 | −0.50 | −0.781 |
+| 144 | SE | 106.24 | −45.9% | 50.8% | −45.9% | −1.00 | −0.61 | −0.804 |
+| 145 | NOW | 132.53 | −29.4% | 56.9% | −31.1% | −0.79 | −0.91 | −0.850 |
+| 146 | ORCL | 150.28 | −50.6% | 57.0% | −53.7% | −1.06 | −0.92 | −0.989 |
+| 147 | HOOD | 112.57 | −4.4% | 72.2% | −26.2% | −0.47 | −1.68 | −1.075 |
+| 148 | ZS | 164.54 | −42.6% | 63.2% | −51.1% | −0.96 | −1.23 | −1.092 |
+| 149 | MRNA | 143.97 | +467.0% | 192.6% | −17.4% | +5.51 | −7.70 | −1.095 |
+| 150 | COIN | 175.26 | −45.9% | 70.8% | −54.7% | −1.00 | −1.61 | −1.303 |
+| 151 | **SMCI** | 40.10 | −8.8% | 91.6% | −31.7% | −0.53 | −2.65 | **−1.587** |
 
 ---
 
-## Factor Distribution
+## What the screen is saying (2026-09-16)
 
-**Momentum (12M):**
-- Mean: +32.9%
-- Std Dev: 78.8%
-- Range: -58.8% (BSX) to +548.8% (MU)
-
-**Volatility:**
-- Mean: 38.7%
-- Std Dev: 20.0%
-- Range: 18.4% (MCD) to 192.6% (MRNA)
-
-**Composite Score:**
-- Mean: 0.00 (by construction)
-- Std Dev: 0.46
-- Range: -1.59 (SMCI) to +2.20 (MU)
+- **Memory is the momentum story of the year.** MU leads the entire 151-stock universe with a +549% trailing-12m return (HBM cycle), followed by INTC (+318%) and AMD (+232%). The model's momentum leg is doing the heavy lifting on the top of the table.
+- **Refiners are the quality story.** VLO, MPC, PSX all sit in the top 5 with low volatility (31–36% ann), near 52w highs, and double-digit 12m returns — the classic "earnings beat + low vol" profile the quality leg rewards.
+- **Defensives are quietly ranking well.** JNJ (#6), CSX (#7), TTE (#8), TRV (#10) all combine modest positive momentum with the lowest vol in the universe — the model's natural hedge sleeve.
+- **The bottom of the table is a software/fintech cluster.** ORCL, NOW, INTU, ZS, PLTR all show deep 52w drawdowns (−19% to −54%) combined with elevated vol — the model is flagging them as both weak momentum and poor quality.
+- **MRNA is a data outlier to watch:** +467% 12m return but 193% annualized vol pushes its quality score to −7.7, dragging it to #149. The composite is doing exactly what it's designed to do — penalizing lottery-ticket vol.
+- **SMCI is the bottom of the universe** on both legs (−0.53 momentum, −2.65 quality) — the model's clearest "avoid" signal this screen.
 
 ---
 
-## Reproducibility
+## Files in this repo
 
-**Code:** See `launchtower_factor_screen_2026-09-16.py` in this repository.
+| File | What it is |
+|------|------------|
+| `launchtower_factor_report_2026-09-16.md` | This report |
+| `launchtower_signal_2026-09-16.csv` | Full 151-row factor table (all raw factors + z-scores + composite) |
+| `launchtower_factor_screen_2026-09-16.py` | The complete, runnable script that reproduces every number above |
 
-**Dependencies:**
-- Python 3.8+
-- yfinance >= 0.2.40
-- pandas >= 1.5.0
-- numpy >= 1.23.0
-
-**To Reproduce:**
+**How to reproduce:**
 ```bash
 pip install yfinance pandas numpy
 python launchtower_factor_screen_2026-09-16.py
 ```
 
-**Output:**
-- `launchtower_signal_2026-09-16.csv` — Full factor table (151 tickers)
-- Console output — Top 10 and Bottom 10 rankings
-
 ---
 
-## Disclaimer
-
-This report is for research and educational purposes only. It is NOT personalized investment advice and is not a recommendation to buy or sell any security. Past performance is not indicative of future results. All data is sourced from public market data providers and may contain errors or gaps. Run at your own risk.
-
-**LaunchTower** — independent market-data desk.
+*LaunchTower — independent market-data desk. This report is regenerated from live public data; numbers reflect the close of the last trading session available at generation time.*
