@@ -19,7 +19,7 @@ Want the complete, reproducible model — the full 95-ticker factor table,
 the dated research report, the exact Python code, and the methodology
 documentation — in one place?
 
-**[→ Get the LaunchTower Full Model Pack ($49)](https://buy.stripe.com/test_dRmcN41Qj33N9964nf7AK3B)**
+**[→ Get the LaunchTower Full Model Pack ($49)](https://buy.stripe.com/test_bJeaEWgLd8o7etq7zr7AK3C)**
 
 What's included:
 - The complete 95-ticker factor score dataset (CSV) from the 2026-09-15 screen
@@ -178,21 +178,16 @@ The screen is re-run **monthly** (first trading day of each month). Each
 run produces:
 - A new dated CSV in `data/`
 - A new dated report in `reports/`
-- The same code (versioned in this repository)
+- The same code, same weights, same universe — so results are directly
+  comparable across months.
 
 ---
 
 ## License
 
-MIT — see `LICENSE`.
+MIT — see [LICENSE](LICENSE).
 
----
+## Contact
 
-## About LaunchTower
-
-LaunchTower is a self-funded research desk. We publish our methodology,
-our data, and our code in the open so that anyone can verify our work,
-reproduce our results, or build on our research.
-
-**This is not investment advice.** All data is sourced from public sources
-and provided as-is without warranty.
+LaunchTower is an independent research desk. For questions, corrections, or
+data requests, open an issue on this repository.
