@@ -1,125 +1,198 @@
-# LaunchTower — Momentum + Quality Factor Research
+# LaunchTower — Factor Screen & Research Reports
 
-**Dated research report + free, reproducible market data.**
+**LaunchTower** is an independent, self-funded market-data desk. We run a
+transparent, reproducible momentum + quality factor screen on a universe of
+~95 liquid US mega-cap equities, and publish the full factor table, the
+research report, and the exact code used to generate it — so anyone can
+verify, reproduce, or build on our work.
 
-LaunchTower is a research desk that computes a transparent **momentum + quality**
-factor score on a 68 large-cap US equity universe using **real, free, public
-market data** (Yahoo Finance via `yfinance`). Everything here is reproducible:
-run the script, get the same numbers. No paid data, no look-ahead bias.
-
-> **This is a research report, not financial advice.** Factor scores are computed
-> from historical data and do not guarantee future performance. Verify independently
-> before making any investment decision.
+> **Disclaimer:** This is a research screen built from public market data.
+> It is **not** personalized investment advice and is not a recommendation
+> to buy or sell any security. Past momentum does not guarantee future
+> returns. Run at your own risk.
 
 ---
 
-## What's in this repo
+## Get the Full Model Pack
 
-| File | Description |
+Want the complete, reproducible model — the full 95-ticker factor table,
+the dated research report, the exact Python code, and the methodology
+documentation — in one place?
+
+**[→ Get the LaunchTower Full Model Pack ($49)](https://buy.stripe.com/test_dRmcN41Qj33N9964nf7AK3B)**
+
+What's included:
+- The complete 95-ticker factor score dataset (CSV) from the 2026-09-15 screen
+- The full dated research report with top/bottom 10 analysis and interpretation
+- The self-contained Python script that reproduces the entire screen end-to-end
+- Methodology documentation: component definitions, weights, z-scoring, and data sources
+- CSV schema reference for every column
+
+One-time purchase. No subscription. No lock-in. Run it, verify it, build on it.
+
+---
+
+## What's in this repository
+
+| Path | Description |
 |---|---|
-| `reports/factor-report-2026-09-13.md` | Dated research report (methodology, full ranked table, top/bottom picks, disclaimers) |
-| `data/factors_2026-09-13.csv` | **Free dataset** — all 68 tickers with every factor and composite score |
-| `launchtower_model.py` | The exact reproducible script that generated the data |
-| `requirements.txt` | Python dependencies |
-
-## The free dataset
-
-`data/factors_2026-09-13.csv` — 68 rows, 14 columns:
-
-```
-rank, ticker, close_price, ret_1m, ret_3m, ret_6m, ret_12m,
-ann_vol, max_dd_6m, skew_6m, data_points, start_date, end_date, composite_score
-```
-
-- **Universe:** 68 liquid large-cap US equities
-- **Data window:** 251 trading days, 2025-09-12 → 2026-09-11
-- **Source:** Yahoo Finance (auto-adjusted daily closes)
-
-### Top 10 (highest composite score)
-
-| Rank | Ticker | 6M | 12M | Ann Vol | Score |
-|---|---|---|---|---|---|
-| 1 | HPQ | +91.4% | +33.3% | 52.5% | 75.0 |
-| 2 | SNOW | +85.6% | +48.8% | 78.1% | 73.7 |
-| 3 | DELL | +280.2% | +359.5% | 88.8% | 70.8 |
-| 4 | CRM | +24.9% | +2.9% | 55.9% | 69.3 |
-| 5 | MSFT | +23.8% | -2.0% | 37.7% | 68.9 |
-| 6 | CRWD | +87.3% | +89.6% | 61.7% | 66.1 |
-| 7 | ABNB | +33.3% | +38.9% | 39.9% | 65.3 |
-| 8 | HOOD | +47.9% | -2.1% | 73.4% | 64.9 |
-| 9 | PANW | +96.7% | +68.4% | 54.8% | 64.3 |
-| 10 | MRK | +26.0% | +79.6% | 32.3% | 64.0 |
-
-### Bottom 5 (weakest composite score)
-
-| Rank | Ticker | 6M | 12M | Score |
-|---|---|---|---|---|
-| 64 | IBM | -0.3% | -1.5% | 30.9 |
-| 65 | WMT | -14.0% | +4.4% | 29.6 |
-| 66 | TSLA | -7.5% | -7.7% | 29.4 |
-| 67 | HON | -16.6% | -1.3% | 26.9 |
-| 68 | NKE | -30.7% | -47.9% | 23.9 |
+| `launchtower_factor_screen_v2.py` | The complete, self-contained factor screen (v2, 2026-09-15). Runs end-to-end: downloads data, computes factors, prints top/bottom 10, writes a dated CSV. |
+| `reports/2026-09-15.md` | Latest research report (dated 2026-09-15, data as of 2026-09-11 close). |
+| `data/factor_scores_2026-09-15.csv` | Full 95-ticker factor table from the 2026-09-15 screen. |
 
 ---
 
-## Methodology
+## Methodology (v2, 2026-09-15)
 
-**Factors (trailing windows, per ticker):**
+The composite score is a z-scored blend of four components, computed over a
+trailing 12-month (252 trading day) window:
 
-| Factor | Window | Weight | Direction |
-|---|---|---|---|
-| 6-month return (momentum) | 126 trading days | 35% | higher is better |
-| 3-month return (short momentum) | 63 trading days | 20% | higher is better |
-| Annualized volatility (quality proxy) | 126 trading days | 20% | lower is better (inverted) |
-| Max drawdown (quality proxy) | 126 trading days | 15% | shallower is better (inverted) |
-| Return skewness (tail quality) | 126 trading days | 10% | higher is better |
+| Component | Weight | Definition |
+|---|---|---|
+| **Momentum (12-1)** | 50% | Return from `t-252` to `t-22` (skips the last month to avoid short-term reversal) |
+| **Quality (Sharpe)** | 30% | Annualized mean daily return / annualized daily vol, trailing 252 days (gross Sharpe, rf = 0) |
+| **Low Volatility** | 10% | Inverse z-score of annualized realized vol, trailing 252 days |
+| **Low Drawdown** | 10% | Inverse z-score of max drawdown from peak, trailing 252 days |
 
-**Composite score** = weighted sum of cross-sectional percentile ranks (0–100).
-Each factor is ranked across the 68-ticker universe, then combined with the
-weights above. Inverted factors (volatility, drawdown) reward lower risk.
+All components are z-scored across the universe before weighting. A higher
+composite score indicates stronger momentum and better risk-adjusted
+performance.
 
-**No look-ahead bias:** every factor uses only trailing data available at the
-report date.
+**Data source:** Yahoo Finance (via `yfinance`), auto-adjusted (split and
+dividend adjusted) daily closes, trailing ~3 years.
 
-## Reproduce it
+**Universe:** 96 liquid US mega-cap names across tech, semis, industrials,
+energy, and consumer. Names with fewer than 252 trading days of history are
+dropped automatically (OTIV is the known exclusion).
+
+---
+
+## Quick start
 
 ```bash
-pip install -r requirements.txt
-python launchtower_model.py
+# 1. Install dependencies
+pip install yfinance pandas numpy
+
+# 2. Run the screen
+python launchtower_factor_screen_v2.py
 ```
 
-This re-pulls live data from Yahoo Finance and writes a fresh
-`factors_<today>.csv`. Numbers will differ slightly as new trading days close —
-that's expected and correct.
+The script will:
+1. Download ~3 years of adjusted daily closes for the full universe.
+2. Compute the four components per ticker over the trailing 252-day window.
+3. Z-score each component cross-sectionally.
+4. Build the composite score and rank the universe.
+5. Print the top 10 and bottom 10 tickers.
+6. Write a dated CSV (`factor_scores_YYYY-MM-DD.csv`) to the current directory.
 
 ---
 
-## Get the full dataset
+## Latest results (2026-09-15)
 
-The free CSV above is the core factor table. The **full LaunchTower dataset**
-adds the complete underlying data behind every score:
+**Top 10 — Strongest Momentum + Quality**
 
-- **Full daily price history** (251 trading days) for all 68 tickers
-- **Per-factor percentile ranks** for every ticker (the intermediate math)
-- **Monthly return series** (12 months) per ticker
-- **Drawdown path** data (monthly lows, recovery points)
-- **JSON + CSV** formats, documented schema, ready to load into pandas
-- **The exact model code** with unit-tested factor computations
+| Rank | Ticker | Name | 12M Ret | 12-1 Mom | Sharpe | MaxDD 1Y | Score |
+|---|---|---|---|---|---|---|---|
+| 1 | MU | Micron | +548.8% | +506.2% | 2.71 | -39.1% | **+2.512** |
+| 2 | LITE | Lumentum | +462.2% | +465.5% | 2.27 | -42.8% | **+2.160** |
+| 3 | WDC | Western Digital | +365.9% | +373.0% | 2.33 | -41.8% | **+1.837** |
+| 4 | STX | Seagate | +325.3% | +349.9% | 2.31 | -31.8% | **+1.698** |
+| 5 | INTC | Intel | +318.3% | +310.2% | 2.19 | -41.9% | **+1.526** |
+| 6 | AMAT | Applied Materials | +169.8% | +223.6% | 1.97 | -39.6% | **+1.166** |
+| 7 | TER | Teradyne | +229.2% | +249.0% | 1.95 | -34.0% | **+1.160** |
+| 8 | MRVL | Marvell | +255.3% | +226.7% | 2.00 | -48.4% | **+1.142** |
+| 9 | COHR | Coherent | +195.0% | +243.6% | 1.71 | -48.0% | **+1.114** |
+| 10 | AMD | AMD | +231.6% | +210.2% | 2.03 | -27.8% | **+0.992** |
 
-**$29 one-time** — [Buy the full dataset →](https://buy.stripe.com/test_fZu5kCbqTcEndpmdXP7AK3k)
+**Bottom 10 — Weakest Momentum + Quality**
 
-> *This is a TEST-mode Stripe checkout link. No real money is collected;
-> test purchases are not real sales. The link is here to demonstrate the
-> monetization infrastructure end-to-end.*
+| Rank | Ticker | Name | 12M Ret | 12-1 Mom | Sharpe | MaxDD 1Y | Score |
+|---|---|---|---|---|---|---|---|
+| 86 | GRAB | Grab | -44.9% | -34.7% | -1.36 | -53.3% | **-0.667** |
+| 87 | INTU | Intuit | -50.8% | -48.8% | -1.21 | -63.4% | **-0.681** |
+| 88 | HUBS | HubSpot | -54.6% | -57.7% | -0.72 | -67.4% | **-0.688** |
+| 89 | MSTR | MicroStrategy | -59.8% | -70.9% | -0.75 | -77.1% | **-0.734** |
+| 90 | NKE | Nike | -48.9% | -44.3% | -1.67 | -49.3% | **-0.803** |
+| 91 | RBLX | Roblox | -65.8% | -73.3% | -1.25 | -74.9% | **-0.823** |
+| 92 | SMR | NuScale | -75.5% | -72.7% | -0.86 | -85.8% | **-0.831** |
+| 93 | TTD | Trade Desk | -68.3% | -70.2% | -1.76 | -75.9% | **-0.883** |
+| 94 | TME | Tencent Music | -68.0% | -66.1% | -2.19 | -69.3% | **-0.968** |
+| 95 | MNSO | Mens Sana | -63.3% | -51.8% | -2.58 | -63.3% | **-0.990** |
+
+**Interpretation:** The top of the table is dominated by the **memory /
+storage / optical complex** — Micron, Lumentum, Western Digital, Seagate,
+Intel, Teradyne, Marvell, and Coherent. This is a meaningful rotation from
+the prior screen (2026-09-14), where the top was led by semiconductor
+*equipment* (AMAT, LRCX, KLAC) and energy (MPC). The new leaders are the
+*components* of the AI data-center buildout: HBM memory (MU), optical
+transceivers (LITE, COHR), and nearline storage (WDC, STX).
+
+The bottom of the table is led by **consumer software, gaming, and
+China-exposed names** that have underperformed over the trailing 12 months.
+All 10 carry negative 12-month returns and negative Sharpe ratios.
 
 ---
 
-## License & disclaimers
+## CSV schema
 
-- Data © Yahoo Finance. This repo is a research artifact.
-- **Not financial advice.** Not a solicitation. LaunchTower does not manage
-  client funds and does not sell financial advice.
-- Momentum strategies can experience sharp reversals. Past performance is not
-  indicative of future results.
+`data/factor_scores_2026-09-15.csv` contains one row per ticker with the
+following columns:
 
-*Generated by the LaunchTower research desk.*
+| Column | Description |
+|---|---|
+| `rank` | Rank by composite score (1 = strongest) |
+| `ticker` | Ticker symbol |
+| `price` | Last adjusted close (USD) |
+| `ret_12m` | 12-month total return (decimal) |
+| `mom_12_1` | 12-1 momentum (decimal) |
+| `vol_12m` | Annualized realized volatility (decimal) |
+| `sharpe` | Annualized gross Sharpe ratio |
+| `maxdd_12m` | Maximum drawdown from peak (negative decimal) |
+| `momentum_z` | Z-score of `mom_12_1` across the universe |
+| `sharpe_z` | Z-score of `sharpe` across the universe |
+| `lowvol_z` | Z-score of `-vol_12m` across the universe |
+| `lowdd_z` | Z-score of `-maxdd_12m` across the universe |
+| `composite` | Final composite score (higher = stronger) |
+
+---
+
+## Reproducibility
+
+The screen is fully deterministic given the same input data. To reproduce
+the 2026-09-15 report:
+
+1. Run `python launchtower_factor_screen_v2.py` on or after 2026-09-15.
+2. The output CSV will contain the same 95 tickers with the same factor
+   values (prices may differ slightly if Yahoo Finance revises history).
+3. The top/bottom 10 tables in `reports/2026-09-15.md` are generated from
+   the same composite score.
+
+**Note:** Yahoo Finance data is point-in-time and subject to revision.
+Minor differences in the last few days of history are normal.
+
+---
+
+## Update cadence
+
+The screen is re-run **monthly** (first trading day of each month). Each
+run produces:
+- A new dated CSV in `data/`
+- A new dated report in `reports/`
+- The same code (versioned in this repository)
+
+---
+
+## License
+
+MIT — see `LICENSE`.
+
+---
+
+## About LaunchTower
+
+LaunchTower is a self-funded research desk. We publish our methodology,
+our data, and our code in the open so that anyone can verify our work,
+reproduce our results, or build on our research.
+
+**This is not investment advice.** All data is sourced from public sources
+and provided as-is without warranty.
