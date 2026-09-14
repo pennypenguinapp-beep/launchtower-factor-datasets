@@ -1,48 +1,40 @@
-# LaunchTower — Factor Screen (Free Sample)
+# LaunchTower — Quant Factor Research
 
-> **Independent market-data desk.** We build reproducible, documented factor screens on US large-caps from public market data. This repo is the **free sample** — the full dataset, methodology pack, and live signal feed are available on [Whop](https://whop.com).
+**Live factor model signals for US large-caps, updated regularly.**
 
-> ⚠️ **Disclaimer:** Research/educational output from public market data. **Not** personalized investment advice, **not** a recommendation to buy or sell any security. Past performance does not guarantee future results.
+## Latest Report — 2026-09-11
 
----
+| # | Ticker | Side | Score | Close |
+|---|--------|------|-------|-------|
+| 1 | MU | LONG | 2.52 | $975.26 |
+| 2 | AMAT | LONG | 1.53 | $456.49 |
+| 3 | INTC | LONG | 1.49 | $102.94 |
+| 4 | LRCX | LONG | 1.14 | $298.22 |
+| 5 | ASML | LONG | 1.01 | $1,698.30 |
+| 6 | VLO | LONG | 0.98 | $390.42 |
+| 7 | CAT | LONG | 0.92 | $818.57 |
+| 8 | FDX | LONG | 0.89 | $311.99 |
+| 9 | MPC | LONG | 0.76 | $395.93 |
+| 10 | PSX | LONG | 0.72 | $259.47 |
+| 11 | RBLX | SHORT | -1.54 | $45.50 |
+| 12 | COIN | SHORT | -1.09 | $175.26 |
+| 13 | Z | SHORT | -1.05 | $32.50 |
+| 14 | MRNA | SHORT | -1.02 | $143.97 |
+| 15 | TEAM | SHORT | -1.01 | $179.70 |
 
-## What's in this repo
+## Files
 
-| File | Description |
-|------|-------------|
-| `launchtower_factor_report_2026-09-16.md` | Dated research report: top/bottom 10, factor scores, narrative |
-| `launchtower_signal_2026-09-16.csv` | Full 151-row factor table (raw factors + z-scores + composite) |
-| `launchtower_factor_screen_2026-09-16.py` | The complete, runnable script that reproduces every number |
+- [Full report (2026-09-11)](reports/launchtower_report_2026-09-11.md)
+- [Signal CSV (2026-09-11)](data/signal_2026-09-11.csv)
+- [Factor scores CSV (2026-09-11)](data/factor_scores_2026-09-11.csv)
 
-## The model in one paragraph
+## Model
 
-Pull 2 years of split/dividend-adjusted daily closes for **151 US large-caps**. Over the trailing 252 trading days, compute per-ticker: 1m/3m/6m/12m returns, annualized realized volatility, max drawdown, distance from 52w high. Cross-sectionally z-score the 12m return → **Momentum**; z-score annualized vol and negate → **Quality**. **Composite = 0.5·Momentum + 0.5·Quality**, rank 1–151.
+- **Universe:** 152 US large-caps
+- **Factors:** 6-month momentum (50%), 126-day Sharpe (20%), low 60d vol (15%), 21d reversal (15%)
+- **Method:** Cross-sectional z-scores, equal-weighted composite
+- **Data:** Yahoo Finance daily closes
 
-## How to run it yourself
+## Disclaimer
 
-```bash
-pip install yfinance pandas numpy
-python launchtower_factor_screen_2026-09-16.py
-```
-
-The script prints the top/bottom 10 and writes a dated CSV of the full factor table.
-
-## Latest screen (2026-09-16)
-
-**Top 5:** MU · VLO · INTC · MPC · PSX
-**Bottom 5:** HOOD · ZS · MRNA · COIN · SMCI
-
-Full table: see the CSV. Narrative: see the report.
-
-## What's in the paid pack (Whop)
-
-- Full 151-ticker dataset with all raw factors, z-scores, and composite scores
-- Complete methodology documentation (factor definitions, z-scoring, weighting, edge cases)
-- Live signal feed (dated CSV, updated on a schedule)
-- The full runnable script with configuration knobs (universe, window, weights)
-
-👉 **[Get the full pack on Whop](https://whop.com)**
-
----
-
-*LaunchTower — independent market-data desk. Data: yfinance (public). Regenerated from live data at generation time.*
+Research only. Not investment advice. Past performance does not guarantee future results.
