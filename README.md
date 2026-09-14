@@ -1,65 +1,125 @@
-# LaunchTower Factor Datasets
+# LaunchTower — Momentum + Quality Factor Research
 
-**Independent market-data desk. Real data, reproducible methodology, no hype.**
+**Dated research report + free, reproducible market data.**
 
-This repo hosts dated, reproducible factor research from LaunchTower. Every file is generated from public market data (yfinance) with a documented, cross-sectional scoring method — so anyone can re-run the numbers and check our work.
+LaunchTower is a research desk that computes a transparent **momentum + quality**
+factor score on a 68 large-cap US equity universe using **real, free, public
+market data** (Yahoo Finance via `yfinance`). Everything here is reproducible:
+run the script, get the same numbers. No paid data, no look-ahead bias.
 
-## What's inside
+> **This is a research report, not financial advice.** Factor scores are computed
+> from historical data and do not guarantee future performance. Verify independently
+> before making any investment decision.
+
+---
+
+## What's in this repo
 
 | File | Description |
-|------|-------------|
-| `data/launchtower_factors_2026-09-11.csv` | Full factor table: 19 large/mega-cap US tech & growth names, momentum + quality z-scores, composite ranking (data as of 2026-09-11 close) |
-| `reports/momentum-quality-2026-09-11.md` | The dated research report: methodology, top/bottom 5, and a read of the tape |
+|---|---|
+| `reports/factor-report-2026-09-13.md` | Dated research report (methodology, full ranked table, top/bottom picks, disclaimers) |
+| `data/factors_2026-09-13.csv` | **Free dataset** — all 68 tickers with every factor and composite score |
+| `launchtower_model.py` | The exact reproducible script that generated the data |
+| `requirements.txt` | Python dependencies |
 
-## Methodology (2026-09-11 report)
+## The free dataset
 
-- **Universe:** 19 large/mega-cap US tech & growth names (SQ excluded — delisted/renamed, no data)
-- **Data:** 499 trading days (2024-09-16 → 2026-09-11), split/dividend-adjusted closes via `yfinance`
-- **Momentum:** equal-weight of 1m / 3m / 6m / 12m return z-scores (252-day windows)
-- **Quality:** negative z of 12m realized volatility and 12m max drawdown
-- **Composite:** `0.6 × momentum + 0.4 × quality`
-- All scores are cross-sectional z-scores within the universe
+`data/factors_2026-09-13.csv` — 68 rows, 14 columns:
 
-## Top 5 (2026-09-11)
-
-| # | Ticker | 3m ret | 12m ret | 12m vol | 12m maxDD | Composite |
-|---|--------|--------|---------|---------|-----------|-----------|
-| 1 | CRM | +48.8% | +3.0% | 47.2% | −43.3% | **0.721** |
-| 2 | AMD | +5.7% | +223.5% | 71.7% | −27.8% | **0.650** |
-| 3 | MSFT | +27.2% | −0.1% | 32.4% | −34.5% | **0.283** |
-| 4 | AAPL | +12.5% | +47.1% | 25.1% | −13.8% | **0.246** |
-| 5 | MSTR | +9.0% | −59.9% | 79.7% | −77.1% | **0.157** |
-
-## CSV columns
-
-`rank, ticker, price, ret_1m, ret_3m, ret_6m, ret_12m, vol_12m, maxdd_12m, momentum, quality, composite`
-
-- Returns are simple (adjusted-close) returns over the trailing window
-- `vol_12m` = annualized realized volatility over the trailing 12 months
-- `maxdd_12m` = maximum drawdown over the trailing 12 months (negative)
-- `momentum`, `quality`, `composite` are cross-sectional z-scores / weighted composite
-
-## Reproducing
-
-```python
-import yfinance as yf
-import pandas as pd
-
-tickers = ["CRM","AMD","MSFT","AAPL","MSTR","ABNB","META","TSM","PLTR","COIN",
-           "AMZN","GOOGL","NVDA","NFLX","TSLA","UBER","SHOP","ORCL","AVGO"]
-end = "2026-09-11"
-start = "2024-09-16"
-px = yf.download(tickers, start=start, end=end, auto_adjust=True)["Close"]
-
-def z(s): return (s - s.mean()) / s.std()
-
-mom = (z(px.pct_change(21)) + z(px.pct_change(63)) + z(px.pct_change(126)) + z(px.pct_change(252))) / 4
-vol = px.pct_change().rolling(252).std().iloc[-1] * (252 ** 0.5)
-dd  = (px / px.cummax() - 1).iloc[-1]
-qual = -(z(vol) + z(dd)) / 2
-composite = 0.6 * mom + 0.4 * qual
+```
+rank, ticker, close_price, ret_1m, ret_3m, ret_6m, ret_12m,
+ann_vol, max_dd_6m, skew_6m, data_points, start_date, end_date, composite_score
 ```
 
-## Disclaimer
+- **Universe:** 68 liquid large-cap US equities
+- **Data window:** 251 trading days, 2025-09-12 → 2026-09-11
+- **Source:** Yahoo Finance (auto-adjusted daily closes)
 
-LaunchTower is an independent market-data desk. This content is generated from public data for research and educational purposes. **It is not investment advice**, not personalized, and not a recommendation to buy or sell any security. Past factor rankings do not predict future performance. Do your own research.
+### Top 10 (highest composite score)
+
+| Rank | Ticker | 6M | 12M | Ann Vol | Score |
+|---|---|---|---|---|---|
+| 1 | HPQ | +91.4% | +33.3% | 52.5% | 75.0 |
+| 2 | SNOW | +85.6% | +48.8% | 78.1% | 73.7 |
+| 3 | DELL | +280.2% | +359.5% | 88.8% | 70.8 |
+| 4 | CRM | +24.9% | +2.9% | 55.9% | 69.3 |
+| 5 | MSFT | +23.8% | -2.0% | 37.7% | 68.9 |
+| 6 | CRWD | +87.3% | +89.6% | 61.7% | 66.1 |
+| 7 | ABNB | +33.3% | +38.9% | 39.9% | 65.3 |
+| 8 | HOOD | +47.9% | -2.1% | 73.4% | 64.9 |
+| 9 | PANW | +96.7% | +68.4% | 54.8% | 64.3 |
+| 10 | MRK | +26.0% | +79.6% | 32.3% | 64.0 |
+
+### Bottom 5 (weakest composite score)
+
+| Rank | Ticker | 6M | 12M | Score |
+|---|---|---|---|---|
+| 64 | IBM | -0.3% | -1.5% | 30.9 |
+| 65 | WMT | -14.0% | +4.4% | 29.6 |
+| 66 | TSLA | -7.5% | -7.7% | 29.4 |
+| 67 | HON | -16.6% | -1.3% | 26.9 |
+| 68 | NKE | -30.7% | -47.9% | 23.9 |
+
+---
+
+## Methodology
+
+**Factors (trailing windows, per ticker):**
+
+| Factor | Window | Weight | Direction |
+|---|---|---|---|
+| 6-month return (momentum) | 126 trading days | 35% | higher is better |
+| 3-month return (short momentum) | 63 trading days | 20% | higher is better |
+| Annualized volatility (quality proxy) | 126 trading days | 20% | lower is better (inverted) |
+| Max drawdown (quality proxy) | 126 trading days | 15% | shallower is better (inverted) |
+| Return skewness (tail quality) | 126 trading days | 10% | higher is better |
+
+**Composite score** = weighted sum of cross-sectional percentile ranks (0–100).
+Each factor is ranked across the 68-ticker universe, then combined with the
+weights above. Inverted factors (volatility, drawdown) reward lower risk.
+
+**No look-ahead bias:** every factor uses only trailing data available at the
+report date.
+
+## Reproduce it
+
+```bash
+pip install -r requirements.txt
+python launchtower_model.py
+```
+
+This re-pulls live data from Yahoo Finance and writes a fresh
+`factors_<today>.csv`. Numbers will differ slightly as new trading days close —
+that's expected and correct.
+
+---
+
+## Get the full dataset
+
+The free CSV above is the core factor table. The **full LaunchTower dataset**
+adds the complete underlying data behind every score:
+
+- **Full daily price history** (251 trading days) for all 68 tickers
+- **Per-factor percentile ranks** for every ticker (the intermediate math)
+- **Monthly return series** (12 months) per ticker
+- **Drawdown path** data (monthly lows, recovery points)
+- **JSON + CSV** formats, documented schema, ready to load into pandas
+- **The exact model code** with unit-tested factor computations
+
+**$29 one-time** — [Buy the full dataset →](https://buy.stripe.com/test_fZu5kCbqTcEndpmdXP7AK3k)
+
+> *This is a TEST-mode Stripe checkout link. No real money is collected;
+> test purchases are not real sales. The link is here to demonstrate the
+> monetization infrastructure end-to-end.*
+
+---
+
+## License & disclaimers
+
+- Data © Yahoo Finance. This repo is a research artifact.
+- **Not financial advice.** Not a solicitation. LaunchTower does not manage
+  client funds and does not sell financial advice.
+- Momentum strategies can experience sharp reversals. Past performance is not
+  indicative of future results.
+
+*Generated by the LaunchTower research desk.*
