@@ -1,6 +1,6 @@
 # LaunchTower — Factor Research (2026-09)
 
-**Latest signal: 2026-09-16** (data through 2026-09-15 close)
+**Latest signal: 2026-09-14** (data through 2026-09-11 close)
 
 ## What this is
 
@@ -20,21 +20,21 @@ Each row is a ticker with:
 | `quality_score` | Quality z-score (inverse volatility) |
 | `composite_score` | Composite: 50% momentum + 50% quality |
 
-## Latest Rankings (2026-09-16)
+## Latest Rankings (2026-09-14)
 
 **Top 5:**
-1. **MU** (Micron) — +2.20 composite
-2. **VLO** (Valero) — +0.82 composite
-3. **INTC** (Intel) — +0.79 composite
-4. **MPC** (Marathon Petroleum) — +0.67 composite
-5. **PSX** (Phillips 66) — +0.63 composite
+1. **MU** — +2.20 composite
+2. **VLO** — +0.82 composite
+3. **INTC** — +0.79 composite
+4. **MPC** — +0.67 composite
+5. **PSX** — +0.63 composite
 
 **Bottom 5:**
-1. **SMCI** (Super Micro Computer) — -1.59 composite
-2. **COIN** (Coinbase) — -1.30 composite
-3. **MRNA** (Moderna) — -1.10 composite
-4. **ZS** (Zscaler) — -1.09 composite
-5. **HOOD** (Robinhood) — -1.07 composite
+1. **HOOD** — -1.07 composite
+2. **ZS** — -1.09 composite
+3. **MRNA** — -1.10 composite
+4. **COIN** — -1.30 composite
+5. **SMCI** — -1.59 composite
 
 ## How to reproduce
 
@@ -42,12 +42,12 @@ Each row is a ticker with:
 import yfinance as yf
 import pandas as pd
 import numpy as np
-from datetime import datetime
+from datetime import datetime, timedelta
 
 universe = ["AAPL","MSFT","NVDA","GOOGL","AMZN","META","TSLA","AVGO","AMD","NFLX","ORCL","CRM","ADBE","CSCO","QCOM","TXN","MU","INTC","IBM","NOW","INTU","PLTR","SNOW","DDOG","NET","CRWD","PANW","ZS","FTNT","ANET","SMCI","ARM","MRVL","LRCX","AMAT","KLAC","ASML","ON","MPWR","MCHP","TER","ADSK","CDNS","SNPS","GFS","MRNA","LLY","NVO","UNH","JNJ","PFE","MRK","ABBV","BMY","TMO","DHR","ISRG","VRTX","REGN","AMGN","GILD","BSX","CVS","CI","HUM","ABT","SYK","ALGN","MDT","BABA","JD","PDD","SE","BIDU","UBER","ABNB","DASH","COIN","HOOD","PYPL","V","MA","AXP","BLK","SCHW","C","BAC","WFC","JPM","GS","MS","SPGI","ICE","CME","MCO","AIG","MET","PRU","TRV","ALL","CB","PGR","SPOT","T","VZ","TMUS","CMCSA","DIS","WMT","COST","HD","MCD","NKE","SBUX","TGT","UPS","CAT","DE","GE","BA","HON","UNP","CSX","NSC","LIN","APD","ECL","SHW","EMR","ETN","PH","ROK","WM","RSG","COP","XOM","CVX","SLB","OXY","EOG","DVN","PSX","VLO","MPC","PBR","BP","SHEL","TTE","RIO","FCX","NEM"]
 
-end = datetime(2026, 9, 16)
-start = datetime(2024, 9, 16)
+end = datetime.now()
+start = end - timedelta(days=730)
 
 data = yf.download(universe, start=start.strftime('%Y-%m-%d'), end=end.strftime('%Y-%m-%d'), 
                    auto_adjust=True, progress=False, threads=True)
@@ -99,15 +99,15 @@ results = pd.DataFrame({
 }).dropna().sort_values('composite_score', ascending=False).reset_index(drop=True)
 
 results.insert(0, 'rank', range(1, len(results)+1))
-results.insert(1, 'date', '2026-09-16')
+results.insert(1, 'date', datetime.now().strftime('%Y-%m-%d'))
 
-results.to_csv('factors_2026-09-16.csv', index=False)
+results.to_csv('factors.csv', index=False)
 ```
 
 ## Files
 
-- `data/launchtower_signal_2026-09-16.csv` — latest dated signal (151 tickers)
-- `reports/launchtower_factor_report_2026-09-16.md` — full research report (methodology, top/bottom picks)
+- `data/launchtower_signal_2026-09-14.csv` — latest dated signal (151 tickers)
+- `reports/launchtower_factor_report_2026-09-14.md` — full research report (methodology, top/bottom picks)
 
 ## Buy the full pack
 
